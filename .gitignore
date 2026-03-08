@@ -1,0 +1,28 @@
+# budAI 布袋
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyc
+.env
+.env.local
+*.egg-info/
+dist/
+build/
+
+# Data
+data/
+*.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Vercel
+.vercel/
