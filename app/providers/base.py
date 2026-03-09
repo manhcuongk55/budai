@@ -1,8 +1,8 @@
 """Abstract base provider — interface all AI providers must implement."""
 
 from abc import ABC, abstractmethod
-from typing import List, Optional
-from dataclasses import dataclass
+from typing import Any, Dict, List, Optional
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -24,6 +24,7 @@ class GenerationResult:
     input_tokens: int
     output_tokens: int
     cost_usd: float
+    prajna_scores: Optional[Dict[str, Any]] = field(default=None)
 
 
 class BaseProvider(ABC):

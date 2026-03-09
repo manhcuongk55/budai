@@ -7,6 +7,7 @@ from app.optimizer.router import router as cost_router
 from app.core.vector_store import vector_store
 from app.core.chunker import chunk_text
 from app.utils.file_parser import parse_file
+from app.prajna import prajna_network
 
 logger = logging.getLogger("budai.rag")
 
@@ -152,10 +153,19 @@ class RAGPipeline:
             max_tokens=max_tokens,
         )
 
+        # 5. 🪷 Filter through Prajna Network
+        prajna_result = await prajna_network.filter(
+            question=question,
+            answer=gen_result.text,
+            context=context,
+            generate_fn=cost_router.generate,
+            rewrite_fn=cost_router.generate,
+        )
+
         total_cost = embed_result.cost_usd + gen_result.cost_usd
 
         return {
-            "answer": gen_result.text,
+            "answer": prajna_result.final_answer,
             "sources": sources,
             "model": {
                 "embedding": f"{embed_result.provider}/{embed_result.model}",
@@ -170,6 +180,13 @@ class RAGPipeline:
                 "embedding_usd": embed_result.cost_usd,
                 "generation_usd": gen_result.cost_usd,
                 "total_usd": total_cost,
+            },
+            "prajna_audit": {
+                "action": prajna_result.action.value,
+                "prajna_passed": prajna_result.prajna_passed,
+                "total_attempts": prajna_result.total_attempts,
+                "scores": {s.classifier: {"score": s.score, "passed": s.passed, "feedback": s.feedback}
+                          for s in prajna_result.scores},
             },
         }
 
