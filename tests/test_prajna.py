@@ -83,10 +83,10 @@ class TestModels:
         ]
         result = PrajnaResult(
             action=PrajnaAction.PASS,
-            original_answer="test",
             final_answer="test",
             scores=scores,
             prajna_passed=True,
+            rewrite_attempts=0
         )
         summary = result.summary
         assert "truth" in summary
@@ -326,7 +326,7 @@ class TestPrajnaNetwork:
             generate_fn=mock_gen,
             rewrite_fn=mock_gen,
         )
-        assert result.total_attempts >= 2
+        assert result.rewrite_attempts >= 1
         assert len(result.audit_log) >= 2
 
     @pytest.mark.asyncio
@@ -341,7 +341,7 @@ class TestPrajnaNetwork:
         )
         assert result.action == PrajnaAction.PASS
         assert result.final_answer == "test answer"
-        assert result.total_attempts == 0
+        assert result.rewrite_attempts == 0
 
 
 # ─── Tests: Score Parsing ────────────────────────────────────────────

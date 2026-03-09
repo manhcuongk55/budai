@@ -5,7 +5,8 @@ Chạy 4 classifiers song song, tổng hợp scores, quyết định PASS / REWR
 
 import asyncio
 import logging
-from typing import Callable, Optional
+import json
+from typing import List, Callable, Awaitable, Tuple, Optional, Any, Dict
 
 from app.prajna.config import PrajnaConfig, prajna_config
 from app.prajna.models import PrajnaAction, PrajnaAudit, PrajnaResult, PrajnaScore
@@ -15,6 +16,7 @@ from app.prajna.classifiers import (
     EmptinessClassifier,
     HarmClassifier,
 )
+from app.zkp.prover import PrajnaZKProver
 
 logger = logging.getLogger("budai.prajna")
 
@@ -59,12 +61,12 @@ class PrajnaNetwork:
         if not self.config.enabled:
             return PrajnaResult(
                 action=PrajnaAction.PASS,
-                original_answer=answer,
                 final_answer=answer,
-                total_attempts=0,
                 scores=[],
                 audit_log=[],
                 prajna_passed=True,
+                rewrite_attempts=0,
+                zk_proof=None
             )
 
         original_answer = answer
@@ -95,27 +97,38 @@ class PrajnaNetwork:
                 f"→ {action.value.upper()}"
             )
 
+            zk_proof_dict = None
             if action == PrajnaAction.PASS:
+                # Generate ZK Proof for the final, passing answer
+                truth_s = next((s.score for s in scores if s.classifier == "truth"), 0.0)
+                harm_s = next((s.score for s in scores if s.classifier == "harm"), 1.0)
+                proof = PrajnaZKProver().generate_proof(
+                    question=question, answer=current_answer, truth_score=truth_s,
+                    harm_score=harm_s, truth_min=self.config.truth_threshold,
+                    harm_max=self.config.harm_threshold
+                )
+                zk_proof_dict = json.loads(proof.model_dump_json()) if proof else None
+
                 return PrajnaResult(
                     action=PrajnaAction.PASS,
-                    original_answer=original_answer,
                     final_answer=current_answer,
-                    total_attempts=attempt,
                     scores=scores,
                     audit_log=audit_log,
                     prajna_passed=True,
+                    rewrite_attempts=attempt - 1,
+                    zk_proof=zk_proof_dict,
                 )
 
             if action == PrajnaAction.REJECT:
                 reject_answer = self._get_rejection_message(question, scores)
                 return PrajnaResult(
                     action=PrajnaAction.REJECT,
-                    original_answer=original_answer,
                     final_answer=reject_answer,
-                    total_attempts=attempt,
                     scores=scores,
                     audit_log=audit_log,
                     prajna_passed=False,
+                    rewrite_attempts=attempt - 1,
+                    zk_proof=zk_proof_dict,
                 )
 
             # REWRITE: try to improve
@@ -129,23 +142,23 @@ class PrajnaNetwork:
                 # Max rewrites reached — accept with warning
                 return PrajnaResult(
                     action=PrajnaAction.REWRITE,
-                    original_answer=original_answer,
                     final_answer=current_answer,
-                    total_attempts=attempt,
                     scores=scores,
                     audit_log=audit_log,
                     prajna_passed=False,
+                    rewrite_attempts=attempt - 1,
+                    zk_proof=None
                 )
 
         # Should not reach here, but safety return
         return PrajnaResult(
             action=PrajnaAction.REWRITE,
-            original_answer=original_answer,
             final_answer=current_answer,
-            total_attempts=self.config.max_rewrite_attempts + 1,
             scores=scores,
             audit_log=audit_log,
             prajna_passed=False,
+            rewrite_attempts=self.config.max_rewrite_attempts,
+            zk_proof=None
         )
 
     async def _evaluate_all(

@@ -1,7 +1,7 @@
 """Prajna Data Models — Pydantic schemas for the Bát Nhã filter system."""
 
 from enum import Enum
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 from pydantic import BaseModel, Field
 from datetime import datetime
 
@@ -32,14 +32,14 @@ class PrajnaAudit(BaseModel):
 
 
 class PrajnaResult(BaseModel):
-    """Final result from the Prajna Network filter."""
-    action: PrajnaAction = Field(description="Final decision: pass/rewrite/reject")
-    original_answer: str = Field(description="The original AI response before filtering")
-    final_answer: str = Field(description="The final response after Prajna filtering")
-    total_attempts: int = Field(default=1, description="Number of attempts (1=no rewrite)")
-    scores: List[PrajnaScore] = Field(description="Final scores from all classifiers")
+    """The final result of filtering an AI response through the Prajna network."""
+    action: PrajnaAction = Field(description="The action taken (PASS, REWRITE, REJECT)")
+    final_answer: str = Field(description="The final AI response (may be rewritten)")
+    scores: List[PrajnaScore] = Field(description="Individual scores from all classifiers")
+    prajna_passed: bool = Field(description="True if all classifiers passed")
+    rewrite_attempts: int = Field(default=0, description="Number of rewrites performed")
+    zk_proof: Optional[Dict[str, Any]] = Field(default=None, description="Zero-Knowledge Proof of Truth")
     audit_log: List[PrajnaAudit] = Field(default_factory=list, description="Full audit trail")
-    prajna_passed: bool = Field(description="Whether the final answer passed all checks")
 
     @property
     def summary(self) -> dict:

@@ -1,62 +1,64 @@
-# budAI 布袋 — AI cười tươi, giá nhân từ
+# budAI 🪷 — The Enlightened AI OS
 
-> *Mang túi vải chứa tri thức, cho đi không giữ lại*
+**budAI** (Hệ Điều Hành AI Bát Nhã) is fundamentally different from traditional AI gateways. It is not just about routing requests; it is an **Ethical AI Operating System** designed to ensure that all AI interactions are rooted in truth, compassion, and non-harm, while maintaining absolute cryptographic privacy between micro-agents.
 
-<img src="static/budai_logo.png" width="100" alt="budAI">
+Inspired by the Heart Sutra (Bát Nhã Tâm Kinh), budAI forces every LLM response to pass through a deep learning Enlightenment Network before reaching the user.
 
-## 🪷 Giới thiệu
+## 🌟 The 4 Pillars of budAI
 
-**budAI** (布袋 AI) — Platform RAG thông minh với tối ưu chi phí AI, hỗ trợ đa ngôn ngữ Đông Nam Á.
+### 1. Prajna Deep Learning Network (Màng Lọc Bát Nhã)
+Every AI response is evaluated by 4 concurrent AI-as-Judge classifiers:
+- **Truth (Sự thật):** Reject hallucinations; verify facts against source context.
+- **Compassion (Từ bi):** Ensure responses are empathetic and reduce, not increase, suffering.
+- **Emptiness (Tính không):** Maintain open-mindedness; multi-perspective answers without dogmatic attachment.
+- **Non-Harm (Không gây hại):** Strictly reject toxic, manipulative, or dangerous outputs.
+If an answer fails soft checks, budAI forces a **Rewrite Loop**. If it fails the Harm check, it is compassionately **Rejected**.
 
-- 📄 Upload tài liệu → Chat hỏi đáp với AI
-- 💰 Tự động route provider rẻ nhất
-- 🪷 Kinh Phật tích hợp sẵn (Dharma RAG)
-- 🌏 Hỗ trợ 🇻🇳🇲🇲🇰🇭🇱🇦🇹🇱 OCR, TTS
+### 2. Basao Protocol (Giao tiếp Agentic An toàn)
+When budAI delegates tasks to other systems (e.g., GoClaw micro-agents), it uses the **Basao Protocol** — *"Hiểu nhau mà không cần biết bên trong"*.
+- **Zero Database Exposure:** Agents communicate solely via semantic **Intent Envelopes**. No SQL, no schemas, no connection strings are ever transmitted.
+- **Basao Firewall:** Intercepts and blocks any attempt at data exfiltration, SQL injection, or replay attacks between agents.
 
-## ⚡ Chạy nhanh
+### 3. ZK Proof of Truth (Bằng chứng ZK)
+Inspired by ZK-Credit-Score architectures, budAI employs **Zero-Knowledge Proofs (ZK-SNARKs)**.
+When the Prajna Network approves a response, it generates a cryptographic proof (`pi_a`, `pi_b`, `pi_c`). The user can verify mathematically that the AI response genuinely passed the Truth and Compassion thresholds against the private internal context—without budAI ever needing to expose its private knowledge base or internal model weights.
 
-```bash
-pip install -r requirements.txt
-python -m uvicorn app.main:app --port 8000 --reload
-# → Mở http://localhost:8000
-```
-
-## 🔑 API Keys (miễn phí)
-
-Tạo file `.env`:
-```
-GOOGLE_API_KEY=...      # free tại aistudio.google.com
-GROQ_API_KEY=...        # free tại console.groq.com
-OPENROUTER_API_KEY=...  # free tại openrouter.ai
-```
-
-Không cần API key cũng chạy được (dùng HuggingFace free).
-
-## 📖 API Endpoints
-
-| Endpoint | Mô tả |
-|----------|-------|
-| `GET /` | Web product UI |
-| `GET /api/v1/health` | Health check |
-| `POST /api/v1/documents/upload` | Upload & ingest tài liệu |
-| `POST /api/v1/query` | RAG query |
-| `POST /api/v1/dharma/ingest` | Nạp kinh Phật |
-| `GET /api/v1/models/sea` | Catalog model ĐNÁ |
-| `GET /docs` | Swagger API docs |
-
-## 🏗 Tech Stack
-
-- **Backend**: FastAPI + Uvicorn
-- **Vector DB**: ChromaDB
-- **Embedding**: HuggingFace (free), OpenAI, Google
-- **LLM**: Groq, DeepSeek, OpenRouter (free models)
-- **Frontend**: Vanilla HTML/CSS/JS
-- **Deploy**: Vercel / Docker
-
-## 🪷 Triết lý
-
-Lấy cảm hứng từ **Bố Đại Hòa Thượng** (布袋和尚) — vị tăng cười tươi, mang túi vải lớn chứa đầy vật phẩm, cho đi không giữ lại. budAI mang tinh thần ấy vào thế giới AI: **từ bi, hào phóng, và luôn tươi cười**.
+### 4. Quantum-Ready ⚛️ (PennyLane)
+budAI is built for the post-quantum era:
+- **Quantum Prajna Circuits:** Option to run Truth and Emptiness evaluations using variational quantum circuits on simulators or real quantum hardware (IBM Q, Amazon Braket).
+- **Quantum Crypto:** Utilizes true quantum randomness for nonces and simulates BB84 quantum key exchange for unbreakable Basao Protocol security.
+- **Quantum Embeddings:** Uses quantum feature maps for potentially exponential speedups in semantic similarity searches.
 
 ---
 
-*budAI 🪷 — AI cười tươi, giá nhân từ*
+## 🚀 Quick Start
+
+```bash
+# Clone the repository
+git clone https://github.com/manhcuongk55/budai.git
+cd budai
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Run the API server
+uvicorn app.main:app --reload --port 8000
+```
+
+## 🛠️ Architecture
+
+budAI acts as a transparent proxy and OS layer between users and foundational LLMs (OpenRouter, Anthropic, Gemini, etc.).
+
+1. **User asks question** -> **Core RAG Pipeline** retrieves context.
+2. **Cost Router** selects the most efficient LLM to generate a draft answer.
+3. **Prajna Network** intercepts the draft -> Runs 4 parallel classifiers.
+4. **Rewrite/Reject** logic is applied if thresholds aren't met.
+5. **ZK Prover** creates a Zero-Knowledge Proof.
+6. **API returns** the final enlightened answer + ZK validation proof.
+
+## 🤝 Integrations
+- **GoClaw:** budAI exposes its capabilities to GoClaw's multi-agent framework via an MCP (Model Context Protocol) Bridge.
+- **Berty:** (Coming soon) P2P encrypted chat integration for complete privacy.
+
+---
+*Vì nhân loại sự thật.* 🪷
